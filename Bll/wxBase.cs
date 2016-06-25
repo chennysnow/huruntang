@@ -13,11 +13,7 @@ namespace Bll
         {
             string url = string.Format(_requestUrlPostMode, method, Config.Token);
             var page = HtmlAnalysis.HttpRequestFromPost(url, param);
-            if (page == "\"errcode\":0,\"errmsg\":\"ok\"}")
-            {
-                return "success";
-            }
-            return page;
+            return page == "\"errcode\":0,\"errmsg\":\"ok\"}" ? "success" : page;
         }
 
         protected string RequestApiGet(string method, string param)

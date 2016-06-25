@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 
 namespace Comment
 {
@@ -86,13 +85,14 @@ namespace Comment
 
         public static int FileIndex = 0;
 
+        static readonly object Lockwrite = new object();
+
         /// <summary>
         /// 写入日志
         /// </summary>
         /// <param name="fileName">完整路径加文件名</param>
         /// <param name="contentString">日志内容</param>
         /// <returns></returns>
-        static readonly object Lockwrite = new object();
         private static void Write(string fileName, string contentString)
         {
 

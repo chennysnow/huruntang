@@ -37,7 +37,7 @@ namespace Comment
             }
         }
 
-        public bool regIsMatch(string text, string regInfo)
+        public bool RegIsMatch(string text, string regInfo)
         {
             return Regex.IsMatch(text, regInfo, Ro);
         }
