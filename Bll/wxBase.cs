@@ -1,7 +1,10 @@
 ﻿using Comment;
 using System;
 using System.Configuration;
+using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using DataBase;
 using Mode;
 
@@ -13,7 +16,7 @@ namespace Bll
         {
             string url = string.Format(_requestUrlPostMode, method, Config.Token);
             var page = HtmlAnalysis.HttpRequestFromPost(url, param);
-            return page == "\"errcode\":0,\"errmsg\":\"ok\"}" ? "success" : page;
+            return page == "{\"errcode\":0,\"errmsg\":\"ok\"}" ? "success" : page;
         }
 
         protected string RequestApiGet(string method, string param)
@@ -32,7 +35,22 @@ namespace Bll
 
         private static WeiXinConfig _config;
         private static readonly object ConfigClock = new object();
+        public static string GetSignature(string timestamp, string nonce, string token = null)
+        {
+            token = token ?? Config.Token;
+            var arr = new[] { token, timestamp, nonce }.OrderBy(z => z).ToArray();
+            var arrString = string.Join("", arr);
+            //var enText = FormsAuthentication.HashPasswordForStoringInConfigFile(arrString, "SHA1");//使用System.Web.Security程序集
+            var sha1 = SHA1.Create();
+            var sha1Arr = sha1.ComputeHash(Encoding.UTF8.GetBytes(arrString));
+            StringBuilder enText = new StringBuilder();
+            foreach (var b in sha1Arr)
+            {
+                enText.AppendFormat("{0:x2}", b);
+            }
 
+            return enText.ToString();
+        }
         public static WeiXinConfig Config
         {
             get

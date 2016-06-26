@@ -1,5 +1,6 @@
 ﻿using System.Web;
 using Bll;
+using Comment;
 
 namespace WebWeixin
 {
@@ -11,6 +12,8 @@ namespace WebWeixin
 
         public void ProcessRequest(HttpContext context)
         {
+            LogServer.WriteLog(context.Request.UrlReferrer.ToString());
+            return;
             context.Response.ContentType = "text/plain";
             getToken(context);
 
