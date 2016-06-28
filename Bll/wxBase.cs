@@ -14,14 +14,14 @@ namespace Bll
     {
         protected string RequestApiPost(string method, string param)
         {
-            string url = string.Format(_requestUrlPostMode, method, Config.Token);
+            string url = string.Format(_requestUrlPostMode, method, Config.AccessToken);
             var page = HtmlAnalysis.HttpRequestFromPost(url, param);
             return page == "{\"errcode\":0,\"errmsg\":\"ok\"}" ? "success" : page;
         }
 
         protected string RequestApiGet(string method, string param)
         {
-            string url = string.Format(_requestUrlPostMode, method, Config.Token);
+            string url = string.Format(_requestUrlPostMode, method, Config.AccessToken);
             if (!string.IsNullOrEmpty(param))
             {
                 url = url + "&" + param;
@@ -37,12 +37,13 @@ namespace Bll
         private static readonly object ConfigClock = new object();
         public static string GetSignature(string timestamp, string nonce, string token = null)
         {
-            token = token ?? Config.Token;
+            token = token ?? Config.WebToken;
             var arr = new[] { token, timestamp, nonce }.OrderBy(z => z).ToArray();
             var arrString = string.Join("", arr);
             //var enText = FormsAuthentication.HashPasswordForStoringInConfigFile(arrString, "SHA1");//使用System.Web.Security程序集
+        
             var sha1 = SHA1.Create();
-            var sha1Arr = sha1.ComputeHash(Encoding.UTF8.GetBytes(arrString));
+            var sha1Arr = sha1.ComputeHash(Encoding.Default.GetBytes(arrString));
             StringBuilder enText = new StringBuilder();
             foreach (var b in sha1Arr)
             {
@@ -50,6 +51,13 @@ namespace Bll
             }
 
             return enText.ToString();
+        }
+
+        private static string sharostring(string text)
+        {
+            byte[] cleanBytes = Encoding.Default.GetBytes(text);
+            byte[] hashedBytes = System.Security.Cryptography.SHA1.Create().ComputeHash(cleanBytes);
+            return BitConverter.ToString(hashedBytes).Replace("-", "");
         }
         public static WeiXinConfig Config
         {
@@ -61,7 +69,7 @@ namespace Bll
                     {
                         _config = new WeiXinConfig();
                         _config.appID = ConfigurationManager.AppSettings["WeiXin_appID"];
-
+                        _config.WebToken = ConfigurationManager.AppSettings["WeiXin_WebToken"];
                         var tempconfig = new WeiXinConfigDB().GetFirstInfo(_config.appID);
 
                         if (tempconfig == null || tempconfig.StopTime < DateTime.Now.AddMinutes(10))
@@ -71,7 +79,7 @@ namespace Bll
                             string url =
                                 $"https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid={_config.appID}&secret={_config.appsecret}";
                             var page = new WebClient().DownloadString(url);
-                            _config.Token = ValidateBase.RegGroupsX<string>(page, "\"access_token\":\"(?<x>.*?)\"");
+                            _config.AccessToken = ValidateBase.RegGroupsX<string>(page, "\"access_token\":\"(?<x>.*?)\"");
                             var time = ValidateBase.RegGroupsX<int>(page, "\"expires_in\":(?<x>\\d+)");
                             _config.StopTime = DateTime.Now.AddSeconds(time);
 

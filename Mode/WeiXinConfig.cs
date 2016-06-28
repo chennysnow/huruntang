@@ -14,7 +14,8 @@ namespace Mode
         public  string appID { get; set; }
         public  string appsecret { get; set; }
         public  string URL { get; set; }
-        public  string Token { get; set; }
+        public  string AccessToken { get; set; }
+        public string WebToken { get; set; }
         public DateTime StopTime { get; set; }
     }
 }
