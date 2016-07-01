@@ -14,20 +14,35 @@ namespace DataBase
 
         public WeiXinConfigDB()
         {
-            _dbFactory = new OrmLiteConnectionFactory(ZnmDBConnectionString, SqlServerDialect.Provider);
-            using (var db = _dbFactory.OpenDbConnection())
+            try
             {
-                db.CreateTable<WeiXinConfig>();
+                _dbFactory = new OrmLiteConnectionFactory(ZnmDBConnectionString, SqlServerDialect.Provider);
+                using (var db = _dbFactory.OpenDbConnection())
+                {
+                    db.CreateTable<WeiXinConfig>();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogServer.WriteLog(ex, "DBerror");
             }
         }
 
         public void AddConfig(WeiXinConfig con)
         {
-            using (var db = _dbFactory.OpenDbConnection())
+            try
             {
-                db.Save(con);
-                //return db.Scalar<ClassInfo, int>(x => Sql.Max(x.Id));
+                using (var db = _dbFactory.OpenDbConnection())
+                {
+                    db.Save(con);
+                    //return db.Scalar<ClassInfo, int>(x => Sql.Max(x.Id));
+                }
             }
+            catch (Exception ex)
+            {
+                LogServer.WriteLog(ex, "DBerror");
+            }
+         
 
         }
 

@@ -213,6 +213,7 @@ namespace WebWeixin
 
         protected void Page_Load(object sender, EventArgs e)
         {
+          test();
             saveRequentInfo();
 
             if (Request.HttpMethod == "GET")
@@ -245,6 +246,8 @@ namespace WebWeixin
                 byte[] b = new byte[s.Length];
                 s.Read(b, 0, (int)s.Length);
                 postStr = Encoding.UTF8.GetString(b);
+                new WeixinApiServer().SaveWxMsg(postStr);
+                
                 LogServer.WriteLog(postStr,"wxpost");
                 return;
                 if (!string.IsNullOrEmpty(postStr))
@@ -252,6 +255,8 @@ namespace WebWeixin
                     //封装请求类
                     XmlDocument doc = new XmlDocument();
                     doc.LoadXml(postStr);
+
+
                     XmlElement rootElement = doc.DocumentElement;
                     XmlNode MsgType = rootElement.SelectSingleNode("MsgType");
                     RequestXML requestXML = new RequestXML();
@@ -337,7 +342,7 @@ namespace WebWeixin
             {
                 Valid();
             }
-            new WeixinApiServer().CreateNemu();
+            //new WeixinApiServer().CreateNemu();
 
         }
 
@@ -360,6 +365,11 @@ namespace WebWeixin
             //        Response.End();
             //    }
             //}
+        }
+
+        public void test()
+        {
+            new WeixinApiServer().GetAllUser();
         }
 
 

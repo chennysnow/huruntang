@@ -18,13 +18,14 @@ namespace WebWeixin
         {
 
             saveRequentInfo(context.Request);
-            string signature = context.Request["signature"];
-            string timestamp = context.Request["timestamp"];
-            string nonce = context.Request["nonce"];
-            string echostr = context.Request["echostr"];
+  
             
             if (context.Request.HttpMethod == "GET")
             {
+                string signature = context.Request["signature"];
+                string timestamp = context.Request["timestamp"];
+                string nonce = context.Request["nonce"];
+                string echostr = context.Request["echostr"];
                 var tempstring = WxBase.GetSignature(timestamp, nonce);
                 //get method - 仅在微信后台填写URL验证时触发
                 if (signature == tempstring)
@@ -39,7 +40,17 @@ namespace WebWeixin
                     LogServer.WriteLog("failed:"+ msg+ "\tRequesturl:" + context.Request.Url,"weixin");
 
                 }
-            
+
+            }
+            else if (context.Request.HttpMethod.ToLower() == "post")
+            {
+                Stream s = System.Web.HttpContext.Current.Request.InputStream;
+                byte[] b = new byte[s.Length];
+                s.Read(b, 0, (int) s.Length);
+                string postStr = Encoding.UTF8.GetString(b);
+                new WeixinApiServer().SaveWxMsg(postStr);
+
+                LogServer.WriteLog(postStr, "wxpost");
             }
             else
             {

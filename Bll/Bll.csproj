@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Senparc.Weixin, Version=4.5.20.25289, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Senparc.Weixin.4.5.20\lib\net40\Senparc.Weixin.dll</HintPath>
       <Private>True</Private>

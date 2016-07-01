@@ -18,7 +18,6 @@ namespace Bll
             var page = HtmlAnalysis.HttpRequestFromPost(url, param);
             return page == "{\"errcode\":0,\"errmsg\":\"ok\"}" ? "success" : page;
         }
-
         protected string RequestApiGet(string method, string param)
         {
             string url = string.Format(_requestUrlPostMode, method, Config.AccessToken);
@@ -41,7 +40,6 @@ namespace Bll
             var arr = new[] { token, timestamp, nonce }.OrderBy(z => z).ToArray();
             var arrString = string.Join("", arr);
             //var enText = FormsAuthentication.HashPasswordForStoringInConfigFile(arrString, "SHA1");//使用System.Web.Security程序集
-        
             var sha1 = SHA1.Create();
             var sha1Arr = sha1.ComputeHash(Encoding.Default.GetBytes(arrString));
             StringBuilder enText = new StringBuilder();
@@ -49,15 +47,7 @@ namespace Bll
             {
                 enText.AppendFormat("{0:x2}", b);
             }
-
             return enText.ToString();
-        }
-
-        private static string sharostring(string text)
-        {
-            byte[] cleanBytes = Encoding.Default.GetBytes(text);
-            byte[] hashedBytes = System.Security.Cryptography.SHA1.Create().ComputeHash(cleanBytes);
-            return BitConverter.ToString(hashedBytes).Replace("-", "");
         }
         public static WeiXinConfig Config
         {

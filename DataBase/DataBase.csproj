@@ -77,6 +77,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestLogDB.cs" />
     <Compile Include="WeiXinConfigDB.cs" />
+    <Compile Include="WxMessageDB.cs" />
+    <Compile Include="WxUserinfoDB.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Comment\Comment.csproj">
